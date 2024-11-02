@@ -20,7 +20,7 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskSequential::valida
 bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskSequential::run() {
   internal_order_test();
 
-  bool inside_sentence;
+  bool inside_sentence = false;
   for (char c : input_str_) {
     if (is_sentence_end(c)) {
       if (inside_sentence) {
@@ -89,10 +89,6 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::run() {
     } else if (!is_whitespace(c)) {
       inside_sentence = true;
     }
-  }
-
-  if (!local_input_.empty() && is_sentence_end(local_input_.back())) {
-    inside_sentence = false;
   }
 
   boost::mpi::reduce(world, local_sentence_count_, sentence_count_, std::plus<>(), 0);
