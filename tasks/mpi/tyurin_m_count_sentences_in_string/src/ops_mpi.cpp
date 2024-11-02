@@ -82,7 +82,7 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::run() {
 
   for (char c : local_input_) {
     if (is_sentence_end(c)) {
-      if (inside_sentence) {
+      if (inside_sentence || c == local_input_.front()) {
         local_sentence_count_++;
         inside_sentence = false;
       }
