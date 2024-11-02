@@ -19,7 +19,7 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskSequential::valida
 
 bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskSequential::run() {
   internal_order_test();
-  
+
   bool inside_sentence = false;
   for (char c : input_str_) {
     if (is_sentence_end(c)) {
@@ -56,7 +56,7 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::pre_proc
   }
 
   boost::mpi::broadcast(world, input_str_, 0);
-  
+
   int chunk_size = input_str_.size() / world.size();
   int start = world.rank() * chunk_size;
   int end = (world.rank() == world.size() - 1) ? input_str_.size() : start + chunk_size;

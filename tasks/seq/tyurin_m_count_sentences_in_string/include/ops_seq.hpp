@@ -18,8 +18,8 @@ class SentenceCountTaskSequential : public ppc::core::Task {
   std::string input_str_;
   int sentence_count_ = 0;
 
-  static bool is_sentence_end(char c); 
-  static bool is_whitespace(char c);   
+  static bool is_sentence_end(char c);
+  static bool is_whitespace(char c);
 };
 
 }  // namespace tyurin_m_count_sentences_in_string_seq

@@ -14,7 +14,7 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
     input_str = "Hello world! This is a test. Are sentences counted correctly?";
-    global_count[0] = 0; 
+    global_count[0] = 0;
   }
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -34,7 +34,7 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_pipeline_run) {
   testMpiTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10; 
+  perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -45,7 +45,7 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(3, global_count[0]);  
+    ASSERT_EQ(3, global_count[0]);
   }
 }
 
@@ -56,7 +56,7 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     input_str = "This is another example. Testing sentence count! Let's see if it works?";
-    global_count[0] = 0; 
+    global_count[0] = 0;
   }
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -76,7 +76,7 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_task_run) {
   testMpiTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10; 
+  perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -87,6 +87,6 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(3, global_count[0]); 
+    ASSERT_EQ(3, global_count[0]);
   }
 }
