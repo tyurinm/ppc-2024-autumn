@@ -7,13 +7,20 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/tyurin_m_count_sentences_in_string/include/ops_mpi.hpp"
 
+const size_t count_strings = 10000;
+
 TEST(tyurin_m_count_sentences_in_string_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::string input_str;
   std::vector<int32_t> global_count(1, 0);
+  std::string str;
 
   if (world.rank() == 0) {
-    input_str = "Hello world! This is a test. Are sentences counted correctly?";
+    str = "This is the first sentence. And this is the second! Finally, the third?";
+    input_str.resize(str.size() * count_strings);
+    for (size_t i = 0; i < count_strings; i++) {
+      std::copy(str.begin(), str.end(), input_str.begin() + i * str.size());
+    }
     global_count[0] = 0;
   }
 
@@ -45,7 +52,7 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(3, global_count[0]);
+    ASSERT_EQ(30000, global_count[0]);
   }
 }
 
@@ -53,9 +60,14 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::string input_str;
   std::vector<int32_t> global_count(1, 0);
+  std::string str;
 
   if (world.rank() == 0) {
-    input_str = "This is another example. Testing sentence count! Let's see if it works?";
+    str = "This is the first sentence. And this is the second! Finally, the third?";
+    input_str.resize(str.size() * count_strings);
+    for (size_t i = 0; i < count_strings; i++) {
+      std::copy(str.begin(), str.end(), input_str.begin() + i * str.size());
+    }
     global_count[0] = 0;
   }
 
@@ -87,6 +99,6 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(3, global_count[0]);
+    ASSERT_EQ(30000, global_count[0]);
   }
 }

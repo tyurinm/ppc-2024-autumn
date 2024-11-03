@@ -55,15 +55,9 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::pre_proc
     input_str_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);
   }
 
-  boost::mpi::broadcast(world, input_str_, 0);
-
-  int chunk_size = input_str_.size() / world.size();
-  int start = world.rank() * chunk_size;
-  int end = (world.rank() == world.size() - 1) ? input_str_.size() : start + chunk_size;
-
-  local_input_ = input_str_.substr(start, end - start);
   local_sentence_count_ = 0;
   sentence_count_ = 0;
+
   return true;
 }
 
@@ -77,6 +71,14 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::validati
 
 bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::run() {
   internal_order_test();
+
+  boost::mpi::broadcast(world, input_str_, 0);
+
+  int chunk_size = input_str_.size() / world.size();
+  int start = world.rank() * chunk_size;
+  int end = (world.rank() == world.size() - 1) ? input_str_.size() : start + chunk_size;
+
+  local_input_ = input_str_.substr(start, end - start);
 
   bool inside_sentence = false;
 

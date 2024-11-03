@@ -6,9 +6,16 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/tyurin_m_count_sentences_in_string/include/ops_seq.hpp"
 
+const size_t count_strings = 10000;
+
 TEST(tyurin_m_count_sentences_in_string_seq, test_pipeline_run) {
-  std::string input_str = "This is the first sentence. And this is the second! Finally, the third?";
-  int expected_sentence_count = 3;
+  std::string str = "This is the first sentence. And this is the second! Finally, the third?";
+  std::string input_str;
+  input_str.resize(str.size() * count_strings);
+  for (size_t i = 0; i < count_strings; i++) {
+    std::copy(str.begin(), str.end(), input_str.begin() + i * str.size());
+  }
+  int expected_sentence_count = 30000;
 
   std::vector<std::string> in_str(1, input_str);
   std::vector<int> out(1, 0);
@@ -41,8 +48,13 @@ TEST(tyurin_m_count_sentences_in_string_seq, test_pipeline_run) {
 }
 
 TEST(tyurin_m_count_sentences_in_string_seq, test_task_run) {
-  std::string input_str = "Is this a sentence? Yes, it is. Also, here’s another one.";
-  int expected_sentence_count = 3;
+  std::string str = "This is the first sentence. And this is the second! Finally, the third?";
+  std::string input_str;
+  input_str.resize(str.size() * count_strings);
+  for (size_t i = 0; i < count_strings; i++) {
+    std::copy(str.begin(), str.end(), input_str.begin() + i * str.size());
+  }
+  int expected_sentence_count = 30000;
 
   std::vector<std::string> in_str(1, input_str);
   std::vector<int> out(1, 0);
