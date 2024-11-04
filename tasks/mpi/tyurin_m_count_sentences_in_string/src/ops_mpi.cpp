@@ -79,11 +79,10 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::run() {
   boost::mpi::broadcast(world, total_length, 0);
 
   std::string local_segment;
-  size_t segment_size = 0;
+  size_t segment_size = total_length / world.size();
   size_t remainder = 0;
 
   if (world.rank() == 0) {
-    segment_size = total_length / world.size();
     remainder = total_length % world.size();
 
     for (int rank = 1; rank < world.size(); rank++) {
@@ -92,7 +91,6 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::run() {
 
     local_segment.assign(input_str_, 0, segment_size + remainder);
   } else {
-    segment_size = total_length / world.size();
     local_segment.resize(segment_size);
     world.recv(0, 0, local_segment.data(), segment_size);
   }
