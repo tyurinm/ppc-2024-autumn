@@ -184,7 +184,7 @@ TEST(tyurin_m_count_sentences_in_string_mpi, test_multiple_consecutive_endings) 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    input_str = "First sentence... Second sentence?! Third sentence.";
+    input_str = "First sentence. Second sentence?! Third sentence.";
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input_str));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_count.data()));

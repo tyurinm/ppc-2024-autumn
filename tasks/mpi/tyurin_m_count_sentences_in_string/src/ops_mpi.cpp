@@ -72,24 +72,41 @@ bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::validati
 bool tyurin_m_count_sentences_in_string_mpi::SentenceCountTaskParallel::run() {
   internal_order_test();
 
-  boost::mpi::broadcast(world, input_str_, 0);
+  size_t total_length{};
+  if (world.rank() == 0) {
+    total_length = input_str_.size();
+  }
+  boost::mpi::broadcast(world, total_length, 0);
 
-  int chunk_size = input_str_.size() / world.size();
-  int start = world.rank() * chunk_size;
-  int end = (world.rank() == world.size() - 1) ? input_str_.size() : start + chunk_size;
+  std::string local_segment;
+  size_t segment_size = 0;
+  size_t remainder = 0;
 
-  local_input_ = input_str_.substr(start, end - start);
+  if (world.rank() == 0) {
+    segment_size = total_length / world.size();
+    remainder = total_length % world.size();
 
-  bool inside_sentence = false;
+    for (int rank = 1; rank < world.size(); rank++) {
+      world.send(rank, 0, input_str_.data() + rank * segment_size + remainder, segment_size);
+    }
 
-  for (char c : local_input_) {
-    if (is_sentence_end(c)) {
-      if (inside_sentence || c == local_input_.front()) {
+    local_segment.assign(input_str_, 0, segment_size + remainder);
+  } else {
+    segment_size = total_length / world.size();
+    local_segment.resize(segment_size);
+    world.recv(0, 0, local_segment.data(), segment_size);
+  }
+
+  bool in_sentence = false;
+
+  for (char character : local_segment) {
+    if (is_sentence_end(character)) {
+      if (in_sentence || character == local_segment.front()) {
         local_sentence_count_++;
-        inside_sentence = false;
+        in_sentence = false;
       }
-    } else if (!is_whitespace(c)) {
-      inside_sentence = true;
+    } else if (!is_whitespace(character)) {
+      in_sentence = true;
     }
   }
 
