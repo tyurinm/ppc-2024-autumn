@@ -48,8 +48,6 @@ bool tyurin_m_linear_topology_mpi::LinearTopologyParallelMPI::pre_processing() {
 bool tyurin_m_linear_topology_mpi::LinearTopologyParallelMPI::run() {
   internal_order_test();
 
-  int rank = world.rank();
-
   if ((sender < target && (rank < sender || rank > target)) || (sender > target && (rank > sender || rank < target))) {
     return true;
   }
