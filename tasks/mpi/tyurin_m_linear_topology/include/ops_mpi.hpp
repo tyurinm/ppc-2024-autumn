@@ -4,8 +4,9 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/vector.hpp>
 #include <memory>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -25,7 +26,8 @@ class LinearTopologyParallelMPI : public ppc::core::Task {
   int rank;
   int sender;
   int target;
-  int data;
+  std::vector<int> data;
+  std::vector<int> route;
   bool result_flag;
   boost::mpi::communicator world;
 };
