@@ -21,9 +21,9 @@ std::vector<int> generate_random_vector(size_t size, int min_value = 0, int max_
   return random_vector;
 }
 
-void run_test(boost::mpi::communicator& world, int sender, int target, size_t vector_size,
-              bool expected_result = true) {
-  if (world.size() <= std::max(sender, target)) {
+void run_test(int num_proc, int sender, int target, size_t vector_size, bool expected_result = true) {
+  boost::mpi::communicator world;
+  if (world.size() < num_proc && world.size() <= std::max(sender, target)) {
     GTEST_SKIP();
     return;
   }
@@ -62,57 +62,24 @@ void run_test(boost::mpi::communicator& world, int sender, int target, size_t ve
 
 }  // namespace tyurin_m_linear_topology_mpi
 
-TEST(tyurin_m_linear_topology_mpi, task0) {
-  boost::mpi::communicator world;
-  if (world.size() >= 2) tyurin_m_linear_topology_mpi::run_test(world, 0, 1, 10);
-}
+TEST(tyurin_m_linear_topology_mpi, task0) { tyurin_m_linear_topology_mpi::run_test(2, 0, 1, 10); }
 
-TEST(tyurin_m_linear_topology_mpi, rev_task0) {
-  boost::mpi::communicator world;
-  if (world.size() >= 2) tyurin_m_linear_topology_mpi::run_test(world, 1, 0, 10);
-}
+TEST(tyurin_m_linear_topology_mpi, rev_task0) { tyurin_m_linear_topology_mpi::run_test(2, 1, 0, 10); }
 
-TEST(tyurin_m_linear_topology_mpi, task1) {
-  boost::mpi::communicator world;
-  if (world.size() >= 3) tyurin_m_linear_topology_mpi::run_test(world, 0, 2, 15);
-}
+TEST(tyurin_m_linear_topology_mpi, task1) { tyurin_m_linear_topology_mpi::run_test(3, 0, 2, 15); }
 
-TEST(tyurin_m_linear_topology_mpi, rev_task1) {
-  boost::mpi::communicator world;
-  if (world.size() >= 3) tyurin_m_linear_topology_mpi::run_test(world, 2, 0, 15);
-}
+TEST(tyurin_m_linear_topology_mpi, rev_task1) { tyurin_m_linear_topology_mpi::run_test(3, 2, 0, 15); }
 
-TEST(tyurin_m_linear_topology_mpi, task2) {
-  boost::mpi::communicator world;
-  if (world.size() >= 3) tyurin_m_linear_topology_mpi::run_test(world, 1, 2, 20);
-}
+TEST(tyurin_m_linear_topology_mpi, task2) { tyurin_m_linear_topology_mpi::run_test(3, 1, 2, 20); }
 
-TEST(tyurin_m_linear_topology_mpi, rev_task2) {
-  boost::mpi::communicator world;
-  if (world.size() >= 3) tyurin_m_linear_topology_mpi::run_test(world, 2, 1, 20);
-}
+TEST(tyurin_m_linear_topology_mpi, rev_task2) { tyurin_m_linear_topology_mpi::run_test(3, 2, 1, 20); }
 
-TEST(tyurin_m_linear_topology_mpi, task3) {
-  boost::mpi::communicator world;
-  if (world.size() >= 4) tyurin_m_linear_topology_mpi::run_test(world, 1, 2, 25);
-}
+TEST(tyurin_m_linear_topology_mpi, task3) { tyurin_m_linear_topology_mpi::run_test(4, 1, 2, 25); }
 
-TEST(tyurin_m_linear_topology_mpi, rev_task3) {
-  boost::mpi::communicator world;
-  if (world.size() >= 4) tyurin_m_linear_topology_mpi::run_test(world, 2, 1, 25);
-}
+TEST(tyurin_m_linear_topology_mpi, rev_task3) { tyurin_m_linear_topology_mpi::run_test(4, 2, 1, 25); }
 
-TEST(tyurin_m_linear_topology_mpi, val_task0) {
-  boost::mpi::communicator world;
-  if (world.size() < 3) tyurin_m_linear_topology_mpi::run_test(world, 0, 100, 0, false);
-}
+TEST(tyurin_m_linear_topology_mpi, val_task0) { tyurin_m_linear_topology_mpi::run_test(3, 0, 100, 0, false); }
 
-TEST(tyurin_m_linear_topology_mpi, val_task1) {
-  boost::mpi::communicator world;
-  if (world.size() < 3) tyurin_m_linear_topology_mpi::run_test(world, 100, 0, 0, false);
-}
+TEST(tyurin_m_linear_topology_mpi, val_task1) { tyurin_m_linear_topology_mpi::run_test(3, 100, 0, 0, false); }
 
-TEST(tyurin_m_linear_topology_mpi, val_task2) {
-  boost::mpi::communicator world;
-  tyurin_m_linear_topology_mpi::run_test(world, 0, 0, 0, false);
-}
+TEST(tyurin_m_linear_topology_mpi, val_task2) { tyurin_m_linear_topology_mpi::run_test(1000, 0, 0, 0, false); }
